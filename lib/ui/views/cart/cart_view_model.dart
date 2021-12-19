@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class HomeViewModel extends BaseViewModel {
+class CartViewModel extends BaseViewModel {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final _navigationService = locator<NavigationService>();
   User? user;
@@ -26,8 +26,8 @@ class HomeViewModel extends BaseViewModel {
   void onNavigationBarTap(int index) async{
     User currentUser = user!;
     switch(index){
-      case 1:
-        _navigationService.navigateTo(Routes.cartView, arguments: CartViewArguments(user: currentUser));
+      case 0:
+        _navigationService.navigateTo(Routes.homeView, arguments: HomeViewArguments(user: currentUser));
         break;
       case 2:
         final SharedPreferences prefs = await _prefs;

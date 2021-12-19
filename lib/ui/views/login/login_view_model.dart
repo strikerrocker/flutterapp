@@ -1,31 +1,49 @@
-import 'package:myapp/app/app.locator.dart';
 import 'package:myapp/app/app.router.dart';
+import 'package:myapp/db/tables.dart';
+import 'package:myapp/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
 
 class LoginViewModel extends BaseViewModel {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  String _errorText = "";
-
-  String get errorText => _errorText;
+  String errorText = "";
   String email = "";
-
-  final _navigationService = locator<NavigationService>();
 
   String password = "";
 
   Future<void> submit() async {
-    if (email != "test@test.com") {
-      _errorText = "Incorrect email";
-      notifyListeners();
-    } else if (password != "testtest") {
-      _errorText = "Incorrect password";
-      notifyListeners();
+    String error = "Incorrect email or password";
+    /*List<User> x;
+    x = await getUsers();*/
+    /*for (User user in x) {
+      log(user.toString());
+      if (user.email == email) {
+        if (user.password == password) {
+          errorText = "";
+          log("Logging in");
+            final SharedPreferences prefs = await preferences;
+          prefs.setString("myappUser", jsonEncode(user.toMap()));
+          _navigationService.navigateTo(Routes.homeView,
+              arguments: HomeViewArguments(user: user));
+          break;
+        } else {
+          errorText = error;
+          break;
+        }
+      }
+    }*/
+    final SharedPreferences prefs = await preferences;
+    String? value = prefs.getString("myappUser");
+    if (value != null && value != "" && value != "null") {
+      print(value);
+      navigationService.navigateTo(Routes.homeView,
+          arguments: HomeViewArguments(user: User.fromString(value)));
     } else {
-      final SharedPreferences prefs = await _prefs;
-      prefs.setBool("AppLoggedIn", true);
-      _navigationService.navigateTo(Routes.homeView);
+      errorText = error;
     }
+    notifyListeners();
+  }
+
+  void signup() {
+    navigationService.navigateTo(Routes.signupView);
   }
 }
